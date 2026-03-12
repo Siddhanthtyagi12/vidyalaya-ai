@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block title %}Face Registration | Vidyalaya AI{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-10">
+        <h1 class="text-3xl font-black text-white tracking-tight mb-1">Face Registration</h1>
+        <p class="text-zinc-500 font-medium tracking-wide flex items-center gap-2 uppercase text-[10px]">
+            <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+            Biometric Enrollment • <span class="text-brand-400 font-bold">Encrypted AI System</span>
+        </p>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="glass-card rounded-[3rem] border border-white/5 overflow-hidden shadow-2xl">
+            <!-- Left Instruction Panel -->
+            <div class="md:col-span-2 p-10 bg-brand-600/10 border-r border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                        <i data-lucide="info" class="w-5 h-5 text-brand-400"></i>
+                        Instructions
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <div class="h-6 w-6 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">01</div>
+                            <p class="text-xs text-zinc-400 leading-relaxed font-semibold">Enter the student's full name and select their role and class.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="h-6 w-6 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">02</div>
+                            <p class="text-xs text-zinc-400 leading-relaxed font-semibold">Click "Initialize AI Scanner" to open the camera monitoring window.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="h-6 w-6 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">03</div>
+                            <p class="text-xs text-zinc-400 leading-relaxed font-semibold">The system will capture 30 biometric samples automatically.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 p-6 rounded-3xl bg-white/[0.03] border border-white/5 italic text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em] leading-relaxed">
+                    "Ensure good lighting and remove glasses/masks for the highest accuracy."
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="md:col-span-3 p-10 bg-white/[0.02]">
+                <form id="regForm" class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
+                        <input type="text" id="regName" placeholder="e.g. Aryan Sharma" required
+                            class="w-full bg-[#0B0F1A] border border-white/10 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-zinc-700 text-white font-semibold">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Role</label>
+                            <select id="regRole"
+                                class="w-full bg-[#0B0F1A] border border-white/10 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all cursor-pointer text-white font-semibold">
+                                <option value="Student">Student</option>
+                                <option value="Teacher">Teacher / Faculty</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Class</label>
+                            <input type="text" id="regClass" placeholder="e.g. 10thA"
+                                class="w-full bg-[#0B0F1A] border border-white/10 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-zinc-700 text-white font-semibold">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Parent Phone Number</label>
+                        <input type="text" id="regParentPhone" placeholder="e.g. +91 9876543210"
+                            class="w-full bg-[#0B0F1A] border border-white/10 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-zinc-700 text-white font-semibold">
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit" id="regBtn"
+                            class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-brand-500/20 flex items-center justify-center gap-3">
+                            <i data-lucide="scan-face" class="w-5 h-5"></i>
+                            Initialize AI Scanner
+                        </button>
+                    </div>
+                </form>
+
+                <div id="regStatus" class="mt-8 hidden p-6 rounded-2xl border-2 transition-all duration-300">
+                    <div class="flex items-start gap-4">
+                        <div id="statusIcon" class="p-2 rounded-xl"></div>
+                        <div>
+                            <p id="statusHeading" class="font-bold text-sm mb-1"></p>
+                            <p id="statusMsg" class="text-xs"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('regForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('regBtn');
+        const status = document.getElementById('regStatus');
+        const statusIcon = document.getElementById('statusIcon');
+        const statusHeading = document.getElementById('statusHeading');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        const formData = new FormData();
+        formData.append('name', document.getElementById('regName').value);
+        formData.append('role', document.getElementById('regRole').value);
+        formData.append('class_name', document.getElementById('regClass').value);
+        formData.append('parent_phone', document.getElementById('regParentPhone').value);
+
+        try {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.innerHTML = '<span>Processing...</span>';
+            
+            status.className = "mt-8 p-6 rounded-2xl border-2 bg-brand-500/10 border-brand-500/20 flex items-center";
+            status.classList.remove('hidden');
+            statusIcon.className = "p-2 rounded-xl bg-brand-500/20 text-brand-400";
+            statusIcon.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+            statusHeading.className = "font-bold text-sm text-white";
+            statusHeading.innerText = "Camera Initializing";
+            statusMsg.className = "text-xs text-zinc-400";
+            statusMsg.innerText = "Please check your server screen for the camera view. Look directly at the camera and press 'C' to capture.";
+            lucide.createIcons();
+
+            const response = await fetch('/register', { method: 'POST', body: formData });
+            const result = await response.text();
+            
+            if (response.ok) {
+                status.className = "mt-8 p-6 rounded-2xl border-2 bg-emerald-500/10 border-emerald-500/20";
+                statusIcon.className = "p-2 rounded-xl bg-emerald-500/20 text-emerald-400";
+                statusIcon.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
+                statusHeading.className = "font-bold text-sm text-emerald-400";
+                statusHeading.innerText = "Success!";
+                statusMsg.className = "text-xs text-emerald-500/80";
+                statusMsg.innerText = result;
+                document.getElementById('regForm').reset();
+            } else {
+                status.className = "mt-8 p-6 rounded-2xl border-2 bg-red-500/10 border-red-500/20";
+                statusIcon.className = "p-2 rounded-xl bg-red-500/20 text-red-400";
+                statusIcon.innerHTML = '<i data-lucide="x-circle" class="w-5 h-5"></i>';
+                statusHeading.className = "font-bold text-sm text-red-400";
+                statusHeading.innerText = "Registration Failed";
+                statusMsg.className = "text-xs text-red-500/80";
+                statusMsg.innerText = result;
+            }
+        } catch (err) {
+            status.innerText = "Error: " + err.message;
+        } finally {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            btn.innerHTML = '<i data-lucide="scan-face" class="w-5 h-5"></i>Initialize AI Scanner';
+            lucide.createIcons();
+        }
+    });
+    lucide.createIcons();
+</script>
+{% endblock %}

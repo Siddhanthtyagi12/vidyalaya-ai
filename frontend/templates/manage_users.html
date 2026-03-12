@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Users | Vidyalaya AI{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight mb-1">Manage Users</h1>
+            <p class="text-zinc-500 font-medium tracking-wide flex items-center gap-2 uppercase text-[10px]">
+                <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+                System Access • <span class="text-brand-400 font-bold">User Directory</span>
+            </p>
+        </div>
+        <a href="/registration" class="bg-brand-600 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-brand-500/20 hover:bg-brand-700 transition-all flex items-center gap-2">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            Add New User
+        </a>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-zinc-700/40 rounded-[2rem] shadow-sm border border-white/5 overflow-hidden">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+            <h3 class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-brand-500"></i>
+                Authorized Personnel
+            </h3>
+            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-3 py-1 bg-white/[0.03] border border-white/5 rounded-full">Secure Registry</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-white/[0.02] text-zinc-500 text-[10px] uppercase font-bold tracking-wider">
+                        <th class="px-6 py-4 text-left">ID</th>
+                        <th class="px-6 py-4 text-left">Name</th>
+                        <th class="px-6 py-4 text-left">Role</th>
+                        <th class="px-6 py-4 text-left">Class</th>
+                        <th class="px-6 py-4 text-left">Parent Phone</th>
+                        <th class="px-6 py-4 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.03]">
+                    {% for user in users %}
+                    <tr class="hover:bg-white/[0.02] transition-colors group">
+                        <td class="px-6 py-4 font-mono text-xs text-zinc-500 font-bold">#{{ user[0] }}</td>
+                        <td class="px-6 py-4 flex items-center gap-3">
+                            <div class="h-9 w-9 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center font-bold text-xs uppercase">
+                                {{ user[1][:1] }}
+                            </div>
+                            <span class="font-bold text-zinc-200">{{ user[1] }}</span>
+                        </td>
+                        <td class="px-6 py-4 uppercase text-[10px] font-black tracking-widest text-zinc-500">{{ user[2] }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 bg-zinc-800 rounded text-[10px] font-bold text-zinc-400">{{ user[3] }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-[10px] font-mono font-bold text-brand-400">{{ user[4] }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="deleteUser({{ user[0] }}, '{{ user[1] | replace("'", "\\'") }}')" 
+                                    class="text-red-400 hover:bg-red-500/10 p-2 rounded-xl transition-all">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not users %}
+                    <tr><td colspan="6" class="px-6 py-12 text-center text-zinc-500 italic">No registered users found.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteUser(id, name) {
+    if (confirm(`Are you sure you want to remove ${name} from the system?`)) {
+        fetch(`/delete_user/${id}`, { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Error deleting user');
+                }
+            });
+    }
+}
+</script>
+{% endblock %}

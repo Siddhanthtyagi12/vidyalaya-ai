@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Your School | Vidyalaya AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#F8FAFC',
+                            100: '#E2E8F0',
+                            500: '#2563EB',
+                            600: '#1D4ED8',
+                            700: '#1E40AF',
+                            900: '#1E3A8A',
+                        },
+                        accent: '#06B6D4',
+                        zinc: {
+                            500: '#71717A',
+                            400: '#A1A1AA',
+                            200: '#E4E4E7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(63, 63, 70, 0.4); /* Zinc-700 */
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+        body {
+            background: radial-gradient(circle at top right, #3F3F46, #27272A); /* Zinc-700 to Zinc-800 */
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 font-sans">
+
+    <!-- Background Elements -->
+    <div class="fixed top-20 right-20 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl opacity-60 animate-float"></div>
+    <div class="fixed bottom-20 left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-60 animate-float" style="animation-delay: -3s"></div>
+
+    <div class="w-full max-w-md relative z-10">
+        <!-- Logo Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center bg-brand-600 text-white p-4 rounded-3xl shadow-2xl shadow-brand-500/30 mb-6">
+                <i data-lucide="graduation-cap" class="w-10 h-10"></i>
+            </div>
+            <h1 class="text-4xl font-black text-white tracking-tight">Vidyalaya<span class="text-brand-500">AI</span></h1>
+            <p class="text-zinc-500 mt-2 font-medium uppercase text-[10px] tracking-[0.3em]">SaaS Edition</p>
+        </div>
+
+        <!-- Registration Card -->
+        <div class="glass p-8 rounded-[2.5rem]">
+            <h2 class="text-xl font-bold text-zinc-200 mb-2">Create New Account</h2>
+            <p class="text-zinc-500 text-xs mb-8">Register your school or organization to get started.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="mb-6 p-4 rounded-2xl {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400{% else %}bg-emerald-500/10 border-emerald-500/20 text-emerald-400{% endif %} border text-xs font-bold flex items-center gap-3">
+                    <i data-lucide="{% if category == 'error' %}alert-circle{% else %}check-circle{% endif %}" class="w-4 h-4"></i>
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/register_school" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2 ml-1">School / Company Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-zinc-400">
+                            <i data-lucide="building" class="w-4 h-4"></i>
+                        </div>
+                        <input type="text" name="name" placeholder="e.g. St. Xavier's High School" required
+                            class="w-full bg-[#18181B]/50 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-zinc-600 font-semibold text-zinc-200">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2 ml-1">Admin Email</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-zinc-400">
+                            <i data-lucide="mail" class="w-4 h-4"></i>
+                        </div>
+                        <input type="email" name="email" placeholder="admin@school.com" required
+                            class="w-full bg-[#18181B]/50 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-zinc-600 font-semibold text-zinc-200">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2 ml-1">Dashboard Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-zinc-400">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                        </div>
+                        <input type="password" name="password" placeholder="••••••••" required
+                            class="w-full bg-zinc-800/50 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-zinc-600 font-semibold text-zinc-200">
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                        class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-brand-500/20 flex items-center justify-center gap-2 group">
+                        Register School
+                        <i data-lucide="sparkles" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+                    </button>
+                    <a href="/login" class="block text-center mt-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest hover:text-brand-500 transition-colors">
+                        Already have an account? Sign In
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

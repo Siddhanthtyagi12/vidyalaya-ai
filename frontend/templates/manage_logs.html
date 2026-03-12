@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Logs | Vidyalaya AI{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header & Date Filter -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight mb-1">Manage Attendance Logs</h1>
+            <p class="text-zinc-500 font-medium tracking-wide flex items-center gap-2 uppercase text-[10px]">
+                <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+                Admin Audit • <span class="text-brand-400 font-bold">{{ date }}</span>
+            </p>
+        </div>
+
+        <form action="/manage_logs" method="GET" class="flex gap-2 bg-zinc-800/40 p-1.5 rounded-2xl shadow-sm border border-white/5">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-zinc-400">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                </div>
+                <input type="date" name="date" value="{{ date }}"
+                    class="bg-zinc-800 border-none text-white text-sm rounded-xl focus:ring-0 block w-full pl-10 p-2.5 font-bold cursor-pointer transition-colors hover:bg-zinc-700 outline-none">
+            </div>
+            <button type="submit"
+                class="text-white bg-brand-600 hover:bg-brand-700 font-bold rounded-xl text-xs px-5 py-2.5 transition-all shadow-lg shadow-brand-500/10">
+                Change Date
+            </button>
+        </form>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="bg-zinc-700/40 rounded-[2rem] shadow-sm border border-white/5 overflow-hidden">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+            <h3 class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="clipboard-list" class="w-5 h-5 text-brand-500"></i>
+                Attendance Records
+            </h3>
+            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-3 py-1 bg-white/[0.03] border border-white/5 rounded-full">{{ records|length }} Records Found</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-white/[0.02] text-zinc-500 text-[10px] uppercase font-bold tracking-wider">
+                        <th class="px-6 py-4 text-left">Name</th>
+                        <th class="px-6 py-4 text-left">Role</th>
+                        <th class="px-6 py-4 text-left">Class / Dept</th>
+                        <th class="px-6 py-4 text-left">Time</th>
+                        <th class="px-6 py-4 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.03]">
+                    {% for row in records %}
+                    <tr class="hover:bg-white/[0.02] transition-colors group">
+                        <td class="px-6 py-4 flex items-center gap-3">
+                            <div class="h-9 w-9 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center font-bold text-xs uppercase">
+                                {{ row[0][:1] }}
+                            </div>
+                            <span class="font-bold text-zinc-200">{{ row[0] }}</span>
+                        </td>
+                        <td class="px-6 py-4 uppercase text-[10px] font-black tracking-widest text-zinc-500">{{ row[2] }}</td>
+                        <td class="px-6 py-4 text-zinc-500 text-xs">{{ row[3] }}</td>
+                        <td class="px-6 py-4 font-mono text-xs font-bold text-brand-400">{{ row[1] }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="deleteRecord({{ row[4] }}, '{{ row[0] }}')" 
+                                    class="text-red-400 hover:bg-red-500/10 p-2 rounded-xl transition-all">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not records %}
+                    <tr><td colspan="5" class="px-6 py-12 text-center text-zinc-500 italic">No attendance records found for this date.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteRecord(id, name) {
+    if (confirm(`Are you sure you want to delete the attendance record for ${name}?`)) {
+        fetch(`/delete_attendance/${id}`, { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Error deleting record');
+                }
+            });
+    }
+}
+</script>
+{% endblock %}

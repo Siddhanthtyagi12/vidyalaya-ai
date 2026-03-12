@@ -1,0 +1,228 @@
+{% extends "layout.html" %}
+{% block title %}Reports & Analytics | Vidyalaya AI{% endblock %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="space-y-8 pb-12">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+            <h1 class="text-4xl font-black text-white tracking-tight leading-none mb-2">Attendance <span class="text-brand-500">Analytics</span></h1>
+            <p class="text-zinc-500 font-bold uppercase text-[10px] tracking-[0.3em]">Insights & Performance Metrics</p>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <a href="/export_report?format=excel" class="bg-emerald-600/10 hover:bg-emerald-600 text-emerald-500 hover:text-white border border-emerald-500/20 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-emerald-500/5 flex items-center gap-2 group">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
+                Export Excel
+            </a>
+            <a href="/export_report?format=pdf" class="bg-rose-600/10 hover:bg-rose-600 text-rose-500 hover:text-white border border-rose-500/20 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-rose-500/5 flex items-center gap-2 group">
+                <i data-lucide="file-type-pdf" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
+                Download PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Hero -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Trend Chart -->
+        <div class="lg:col-span-2 glass-card p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white tracking-tight">Attendance Trends</h3>
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Daily Present Count (Last 30 Days)</p>
+                </div>
+                <div class="flex items-center gap-2 bg-zinc-900/50 p-1.5 rounded-xl border border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <button class="px-3 py-1 bg-brand-600 text-white rounded-lg">30D</button>
+                    <button class="px-3 py-1 hover:text-white transition-colors">90D</button>
+                </div>
+            </div>
+            
+            <div class="h-64">
+                <canvas id="trendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Role Breakdown -->
+        <div class="lg:col-span-1 glass-card p-8 rounded-[2.5rem] border border-white/5">
+            <h3 class="text-xl font-bold text-white tracking-tight mb-8">Participation</h3>
+            <div class="relative h-48 flex items-center justify-center">
+                <canvas id="roleChart"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span class="text-2xl font-black text-white" id="total-present">0</span>
+                    <span class="text-[8px] font-bold text-zinc-500 uppercase tracking-widest">Total Today</span>
+                </div>
+            </div>
+            
+            <div class="mt-8 space-y-4">
+                {% for role, count in role_dist %}
+                <div class="flex items-center justify-between p-3 bg-zinc-900/40 rounded-2xl border border-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full {% if 'Teacher' in role %}bg-brand-500{% else %}bg-cyan-500{% endif %}"></div>
+                        <span class="text-xs font-bold text-zinc-400">{{ role }}</span>
+                    </div>
+                    <span class="text-sm font-black text-white">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Performance Table -->
+    <div class="glass-card rounded-[2.5rem] border border-white/5 overflow-hidden">
+        <div class="p-8 border-b border-white/5 flex items-center justify-between">
+            <div>
+                <h3 class="text-xl font-bold text-white tracking-tight">Student Performance</h3>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mt-1">Ranking by aggregate attendance</p>
+            </div>
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600"></i>
+                <input type="text" id="statsSearch" placeholder="Search students..." 
+                    class="bg-zinc-900/50 border border-white/5 rounded-2xl py-3 pl-12 pr-6 text-xs text-white outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left" id="statsTable">
+                <thead>
+                    <tr class="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-500 bg-zinc-900/30">
+                        <th class="px-8 py-5">Rank</th>
+                        <th class="px-8 py-5">Student</th>
+                        <th class="px-8 py-5">Class</th>
+                        <th class="px-8 py-5 text-center">Days Present</th>
+                        <th class="px-8 py-5 text-right pr-12">Attendance %</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.03]">
+                    {% for s in stats | sort(attribute='percentage', reverse=True) %}
+                    <tr class="group hover:bg-white/[0.02] transition-colors">
+                        <td class="px-8 py-6">
+                            <span class="text-xs font-black text-zinc-600 group-hover:text-brand-500 transition-colors">#{{ loop.index }}</span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-4">
+                                <div class="h-10 w-10 rounded-xl bg-zinc-700/50 text-brand-400 flex items-center justify-center font-bold text-sm border border-white/5">
+                                    {{ s.name[0] }}
+                                </div>
+                                <span class="text-sm font-bold text-white">{{ s.name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span class="px-3 py-1 bg-zinc-900 text-zinc-400 rounded-lg text-xs font-bold border border-white/5">{{ s.class }}</span>
+                        </td>
+                        <td class="px-8 py-6 text-center">
+                            <span class="text-sm font-mono font-bold text-zinc-400">{{ s.present_days }}</span>
+                        </td>
+                        <td class="px-8 py-6 text-right pr-12">
+                            <div class="flex items-center justify-end gap-3">
+                                <span class="text-sm font-black {% if s.percentage < 75 %}text-rose-500 animate-pulse{% else %}text-emerald-400{% endif %}">
+                                    {{ s.percentage }}%
+                                </span>
+                                <div class="w-16 h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-white/[0.03]">
+                                    {% if s.percentage < 75 %}
+                                    <div class="h-full bg-rose-500" style="width: {{ s.percentage }}%"></div>
+                                    {% else %}
+                                    <div class="h-full bg-emerald-400" style="width: {{ s.percentage }}%"></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search implementation
+    document.getElementById('statsSearch').addEventListener('keyup', function() {
+        let q = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#statsTable tbody tr');
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(q) ? '' : 'none';
+        });
+    });
+
+    // Charts Implementation
+    async function initCharts() {
+        try {
+            const res = await fetch('/api/stats/trends');
+            const data = await res.json();
+            
+            // Trends Line Chart
+            new Chart(document.getElementById('trendsChart'), {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Present Students',
+                        data: data.data,
+                        borderWidth: 3,
+                        borderColor: '#6366f1',
+                        backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.2)');
+                            gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+                            return gradient;
+                        },
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#6366f1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: 'rgba(255,255,255,0.02)' },
+                            ticks: { color: '#71717a', font: { weight: 'bold' } }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#71717a', font: { weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+
+            // Doughnut Chart
+            const roleDist = {{ role_dist | tojson }};
+            let total = 0;
+            roleDist.forEach(item => total += item[1]);
+            document.getElementById('total-present').innerText = total;
+
+            new Chart(document.getElementById('roleChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: roleDist.map(item => item[0]),
+                    datasets: [{
+                        data: roleDist.map(item => item[1]),
+                        backgroundColor: ['#6366f1', '#06b6d4', '#4f46e5', '#8b5cf6', '#ec4899'],
+                        borderWidth: 0,
+                        hoverOffset: 12
+                    }]
+                },
+                options: {
+                    cutout: '80%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+        } catch (err) {
+            console.error("Chart Error:", err);
+        }
+    }
+
+    initCharts();
+</script>
+
+{% endblock %}

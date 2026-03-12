@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+
+{% block title %}Live Monitor | Vidyalaya AI{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Live Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+                <h1 class="text-3xl font-black text-white tracking-tight">Live Attendance Monitor</h1>
+            </div>
+            <p class="text-zinc-500 font-medium font-medium tracking-wide flex items-center gap-2 uppercase text-[10px]">Monitoring real-time check-ins for <span class="text-brand-500 font-bold" id="current-date"></span></p>
+        </div>
+        
+        <div class="bg-zinc-700 p-1 rounded-2xl border border-white/5 flex items-center shadow-2xl">
+            <div class="px-6 py-2 border-r border-white/5">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Server Time</p>
+                <p class="text-xl font-black text-brand-500" id="live-clock">--:--:--</p>
+            </div>
+            <div class="px-4 text-brand-500/30">
+                <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Grid -->
+    <div id="live-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Live cards will be injected here via JS -->
+        <div class="col-span-full py-20 text-center text-zinc-500 italic">
+            Waiting for first attendance...
+        </div>
+    </div>
+</div>
+
+<template id="log-card-template">
+    <div class="bg-zinc-800/40 p-6 rounded-[2.5rem] border border-white/5 shadow-sm hover:shadow-2xl hover:bg-zinc-800/60 transition-all duration-500 group relative overflow-hidden animate-in fade-in slide-in-from-bottom-4">
+        <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+            <i data-lucide="check-circle" class="w-20 h-20 text-brand-500"></i>
+        </div>
+        <div class="flex items-start justify-between mb-4">
+            <div class="h-14 w-14 rounded-2xl bg-white/5 text-brand-400 flex items-center justify-center font-bold text-xl uppercase shadow-inner border border-white/5">
+                <span class="initial"></span>
+            </div>
+            <span class="px-3 py-1 bg-brand-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-brand-500/20">Checked In</span>
+        </div>
+        <div>
+            <h3 class="name text-xl font-bold text-white truncate mb-1"></h3>
+            <div class="flex items-center gap-2 text-zinc-400 text-xs font-medium mb-4">
+                <span class="role uppercase tracking-wider"></span>
+                <span class="h-1 w-1 rounded-full bg-zinc-700"></span>
+                <span class="class"></span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-white/[0.03]">
+                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Recorded At</span>
+                <span class="time font-mono font-bold text-cyan-400 text-sm"></span>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    let lastRecordId = 0;
+    const grid = document.getElementById('live-grid');
+    const template = document.getElementById('log-card-template');
+
+    function updateDate() {
+        const now = new Date();
+        document.getElementById('current-date').innerText = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-GB', { hour12: false });
+    }
+
+    async function fetchLatestLogs() {
+        try {
+            const response = await fetch('/api/latest_logs');
+            const data = await response.json();
+            
+            if (data.length === 0) return;
+
+            // Get only records that are new since last fetch
+            const newRecords = data.filter(r => r.id > lastRecordId);
+            
+            if (newRecords.length > 0) {
+                // If this is the very first load, clear the empty state
+                if (lastRecordId === 0) grid.innerHTML = '';
+
+                // Add new records to the top
+                newRecords.forEach(record => {
+                    const clone = template.content.cloneNode(true);
+                    clone.querySelector('.initial').innerText = record.name.charAt(0);
+                    clone.querySelector('.name').innerText = record.name;
+                    clone.querySelector('.role').innerText = record.role;
+                    clone.querySelector('.class').innerText = record.class;
+                    clone.querySelector('.time').innerText = record.time;
+                    
+                    grid.insertBefore(clone, grid.firstChild);
+                    
+                    // Keep only first 12 cards for performance
+                    if (grid.children.length > 12) {
+                        grid.removeChild(grid.lastChild);
+                    }
+                });
+                
+                lastRecordId = Math.max(...data.map(r => r.id));
+                lucide.createIcons();
+            }
+        } catch (err) {
+            console.error('Error fetching logs:', err);
+        }
+    }
+
+    setInterval(updateClock, 1000);
+    setInterval(fetchLatestLogs, 3000); // Check every 3 seconds
+    updateDate();
+    updateClock();
+    fetchLatestLogs();
+</script>
+{% endblock %}

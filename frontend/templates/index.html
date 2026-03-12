@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidyalaya AI | Enterprise Grade Attendance Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#F8FAFC',
+                            500: '#6366F1', /* Indigo-500 */
+                            600: '#4F46E5', /* Indigo-600 */
+                            700: '#4338CA',
+                        },
+                        zinc: {
+                            950: '#09090B',
+                            900: '#18181B',
+                            800: '#27272A',
+                            700: '#3F3F46',
+                            600: '#52525B',
+                            500: '#71717A',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(39, 39, 42, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(39, 39, 42, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: rgba(63, 63, 70, 0.5);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-8px);
+        }
+        .hero-mesh {
+            background-color: #09090B;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-sans bg-zinc-950 text-white selection:bg-brand-500 selection:text-white overflow-x-hidden">
+
+    <!-- Header / Nav -->
+    <nav class="fixed top-0 w-full z-50 py-4 px-6 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto glass rounded-3xl px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i data-lucide="graduation-cap" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tighter">Vidyalaya<span class="text-brand-500">AI</span></span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8 text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
+                <a href="#features" class="hover:text-white transition-colors">Solutions</a>
+                <a href="#how-it-works" class="hover:text-white transition-colors">How it Works</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="/login" class="text-xs font-bold text-zinc-400 hover:text-white transition-colors px-4 py-2 hidden sm:block">Login</a>
+                <a href="/login" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-lg shadow-brand-500/20 active:scale-95">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-44 pb-32 px-6 hero-mesh overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-brand-500/10 border border-brand-500/20 rounded-full text-brand-400 text-[10px] font-black uppercase tracking-[0.2em] mb-8 animate-in fade-in slide-in-from-left-4 duration-700">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                    </span>
+                    Trusted by 500+ Institutions
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.1] mb-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    The Smart Way to <br/>
+                    <span class="bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent">Verify Attendance.</span>
+                </h1>
+                <p class="max-w-xl text-zinc-400 text-lg font-medium leading-relaxed mb-10 animate-in fade-in slide-in-from-bottom-12 duration-1200">
+                    Automate student verification with Enterprise-grade Face Recognition. Zero manual effort, 100% accuracy, and localized data privacy.
+                </p>
+                <div class="flex flex-wrap items-center gap-5 animate-in fade-in slide-in-from-bottom-16 duration-1400">
+                    <a href="/login" class="bg-brand-600 hover:bg-brand-700 text-white px-10 py-4 rounded-2xl font-bold text-base shadow-2xl shadow-brand-500/40 transition-all flex items-center gap-3">
+                        Launch System
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#features" class="px-8 py-4 text-zinc-400 hover:text-white font-bold transition-colors">View Demo</a>
+                </div>
+                
+                <div class="mt-16 flex items-center gap-12 text-zinc-500 animate-in fade-in duration-2000">
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-black text-white">99.9%</span>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-zinc-600">Accuracy Rate</span>
+                    </div>
+                    <div class="w-px h-10 bg-zinc-800"></div>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-black text-white">< 1s</span>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-zinc-600">Verification Speed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Image Mockup -->
+            <div class="relative hidden lg:block animate-float">
+                <div class="absolute inset-0 bg-brand-500/20 blur-[120px] rounded-full"></div>
+                <div class="relative glass rounded-[3rem] p-4 border border-white/10 shadow-2xl overflow-hidden">
+                    <img src="saas_hero_dashboard_mockup_1773235994163.png" alt="Dashboard Mockup" class="rounded-[2.5rem] w-full">
+                </div>
+                <!-- Floating Badge -->
+                <div class="absolute -bottom-8 -left-8 glass-card p-6 rounded-3xl animate-pulse-slow">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-white">Verified Mark</p>
+                            <p class="text-[10px] text-zinc-500 font-bold uppercase mt-1">Status: Success</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Trusted By -->
+    <section class="py-16 border-y border-white/5 bg-zinc-900/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="text-center text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-12">Empowering Digital India's Institutions</p>
+            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+                <span class="text-2xl font-black text-zinc-400 tracking-tighter">CENTRAL ACADEMY</span>
+                <span class="text-2xl font-black text-zinc-400 tracking-tighter italic">DELHI PUBLIC SCHOOL</span>
+                <span class="text-2xl font-black text-zinc-400 tracking-tighter">ST. XAVIERS</span>
+                <span class="text-2xl font-black text-zinc-400 tracking-tighter">KV SANGATHAN</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-24 reveal">
+                <h2 class="text-[11px] font-black text-brand-500 uppercase tracking-[0.4em] mb-4">The Solution</h2>
+                <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">Enterprise Infrastructure</h2>
+                <p class="text-zinc-500 mt-6 text-lg max-w-2xl mx-auto">Modern schools need modern tools. Replace outdated registers with AI-powered automation.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 1 -->
+                <div class="glass-card p-10 rounded-[2.5rem] reveal">
+                    <div class="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 mb-8">
+                        <i data-lucide="scan-face" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Neural Face Recognition</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Built on Google MediaPipe's latest 478-landmark mesh, providing unmatched precision for identifying students in seconds.</p>
+                </div>
+                <!-- 2 -->
+                <div class="glass-card p-10 rounded-[2.5rem] reveal">
+                    <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-8">
+                        <i data-lucide="shield-check" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Blink-Based Liveness</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Safety protocols that detect human eye activity to prevent spoofing through photos or high-res screens.</p>
+                </div>
+                <!-- 3 -->
+                <div class="glass-card p-10 rounded-[2.5rem] reveal">
+                    <div class="w-14 h-14 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 mb-8">
+                        <i data-lucide="database" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Multi-Tenant SaaS</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Isolated database architecture for every organization, ensuring high-speed queries and strict data segregation.</p>
+                </div>
+                <!-- 4 -->
+                <div class="glass-card p-10 rounded-[2.5rem] reveal">
+                    <div class="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 mb-8">
+                        <i data-lucide="bar-chart-3" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Real-Time Analytics</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Live monitoring dashboard with instant attendance updates, trend analysis, and short-attendance alerts.</p>
+                </div>
+                <!-- 5 -->
+                <div class="glass-card p-10 rounded-[2.5rem] reveal">
+                    <div class="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-400 mb-8">
+                        <i data-lucide="hard-drive" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Offline Synchronization</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Designed to function even without a stable internet connection, syncing locally before pushing to the cloud.</p>
+                </div>
+                <!-- 6 -->
+                <div class="glass-card p-10 rounded-[2.5rem] reveal">
+                    <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 mb-8">
+                        <i data-lucide="settings" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Hardware Integration</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">Plugs directly into your existing infrastructure. Works with internal webcams and external USB cameras.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how-it-works" class="py-32 bg-zinc-900/50 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 reveal">
+            <h2 class="text-4xl font-black text-center mb-24">Simple to get <span class="text-brand-500">started.</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <!-- Line -->
+                <div class="hidden md:block absolute top-10 left-1/2 -translate-x-1/2 w-4/5 h-0.5 bg-zinc-800"></div>
+                
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-brand-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl relative z-10 font-black text-2xl">1</div>
+                    <h4 class="text-white font-bold mb-3">Register Institution</h4>
+                    <p class="text-zinc-500 text-sm">Create your school's private instance in seconds.</p>
+                </div>
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-brand-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl relative z-10 font-black text-2xl">2</div>
+                    <h4 class="text-white font-bold mb-3">Enroll Students</h4>
+                    <p class="text-zinc-500 text-sm">A quick face-scan takes less than 10 seconds per user.</p>
+                </div>
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-brand-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl relative z-10 font-black text-2xl">3</div>
+                    <h4 class="text-white font-bold mb-3">Live Monitoring</h4>
+                    <p class="text-zinc-500 text-sm">Attendance begins marking automatically via video stream.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto reveal">
+            <div class="text-center mb-24">
+                <h2 class="text-4xl md:text-5xl font-black text-white">Transparent <span class="text-brand-500">Pricing</span></h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Plan 1 -->
+                <div class="glass-card p-10 rounded-[3rem] flex flex-col">
+                    <h3 class="text-zinc-400 font-bold uppercase text-xs tracking-widest mb-4">Starter</h3>
+                    <div class="text-4xl font-black text-white mb-6">Free <span class="text-sm font-medium text-zinc-600">/ trial</span></div>
+                    <p class="text-zinc-500 text-sm mb-10">Perfect for exploring the AI capabilities of our system.</p>
+                    <ul class="space-y-4 mb-12 flex-grow text-sm font-medium text-zinc-400">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Up to 50 Students</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Local Storage</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Basic Analytics</li>
+                    </ul>
+                    <a href="/login" class="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl text-center font-bold transition-all">Try Now</a>
+                </div>
+
+                <!-- Plan 2 -->
+                <div class="glass p-1 normal-border rounded-[3rem] relative lg:-translate-y-8">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-600 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest leading-relaxed">Most Popular</div>
+                    <div class="p-10 flex flex-col h-full">
+                        <h3 class="text-brand-400 font-bold uppercase text-xs tracking-widest mb-4">Professional</h3>
+                        <div class="text-4xl font-black text-white mb-6">₹4,999 <span class="text-sm font-medium text-zinc-600">/ year</span></div>
+                        <p class="text-zinc-500 text-sm mb-10">Everything a standard school needs for daily workflow.</p>
+                        <ul class="space-y-4 mb-12 flex-grow text-sm font-medium text-zinc-300">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Unlimited Students</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Cloud Dashboards</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Parent Notification</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> 24/7 Support</li>
+                        </ul>
+                        <a href="/login" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl text-center font-bold shadow-xl shadow-brand-500/40 transition-all">Start Trial</a>
+                    </div>
+                </div>
+
+                <!-- Plan 3 -->
+                <div class="glass-card p-10 rounded-[3rem] flex flex-col">
+                    <h3 class="text-zinc-400 font-bold uppercase text-xs tracking-widest mb-4">Enterprise</h3>
+                    <div class="text-4xl font-black text-white mb-6">Custom</div>
+                    <p class="text-zinc-500 text-sm mb-10">Tailored solutions for large university campuses.</p>
+                    <ul class="space-y-4 mb-12 flex-grow text-sm font-medium text-zinc-400">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Multi-Campus Scaling</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> API Integrations</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-brand-500"></i> Custom Training</li>
+                    </ul>
+                    <a href="mailto:support@vidyalaya.ai" class="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl text-center font-bold transition-all">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-32 px-6">
+        <div class="max-w-5xl mx-auto glass p-16 md:p-24 rounded-[4rem] text-center border-brand-500/20 reveal">
+            <h2 class="text-4xl md:text-6xl font-black text-white mb-8">Ready to modernize your <span class="bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent">campus?</span></h2>
+            <p class="text-zinc-400 text-lg mb-12 max-w-xl mx-auto font-medium">Join 500+ forward-thinking institutions and eliminate proxy attendance forever.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="/login" class="bg-brand-600 hover:bg-brand-700 text-white px-12 py-5 rounded-2xl font-black text-lg transition-all shadow-2xl shadow-brand-500/20">Create My Virtual School</a>
+                <a href="#" class="text-zinc-500 hover:text-white font-bold transition-colors">Talk to an expert</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 border-t border-white/5 reveal">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="graduation-cap" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="text-lg font-black tracking-tighter">Vidyalaya<span class="text-brand-500">AI</span></span>
+                </div>
+                <p class="text-zinc-500 text-sm leading-relaxed">Securing educational integrity through next-gen biometrics and automation.</p>
+            </div>
+            <div>
+                <h5 class="text-white font-black text-xs uppercase tracking-widest mb-6">Company</h5>
+                <ul class="space-y-4 text-zinc-500 text-sm font-bold">
+                    <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-black text-xs uppercase tracking-widest mb-6">Product</h5>
+                <ul class="space-y-4 text-zinc-500 text-sm font-bold">
+                    <li><a href="#" class="hover:text-white transition-colors">Features</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-black text-xs uppercase tracking-widest mb-6">Social</h5>
+                <div class="flex gap-4">
+                    <div class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-brand-600 hover:text-white transition-all cursor-pointer">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </div>
+                    <div class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-brand-600 hover:text-white transition-all cursor-pointer">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </div>
+                    <div class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-zinc-500 hover:bg-brand-600 hover:text-white transition-all cursor-pointer">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/5">
+            <p class="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">Made for Global Educational Efficiency</p>
+            <p class="text-zinc-500 text-xs font-medium">© 2026 Vidyalaya AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Scroll Reveal Animation
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                var revealPoint = 150;
+                if (revealTop < windowHeight - revealPoint) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+
+        // Navbar blur on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('py-2');
+                nav.classList.remove('py-4');
+            } else {
+                nav.classList.add('py-4');
+                nav.classList.remove('py-2');
+            }
+        });
+
+        // Trigger reveal once on load
+        reveal();
+    </script>
+</body>
+</html>
