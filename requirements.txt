@@ -1,0 +1,10 @@
+flask
+flask-cors
+opencv-python-headless
+numpy
+mediapipe
+gunicorn
+psycopg2-binary
+pandas
+fpdf
+openpyxl

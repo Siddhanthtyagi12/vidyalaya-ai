@@ -1,0 +1,27 @@
+# Ignore local Windows scripts and shortcuts
+*.bat
+*.vbs
+start_magic_link.py
+
+# Ignore IDE settings
+.idea/
+.vscode/
+
+# Ignore Python cache and temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore local datasets and mobile app code (build separately)
+dataset/
+mobile_app/
+node_modules/
+
+# Ignore local environment files
+.env
+.expo/
+*.db
+backend/camera_engine.log
+backend/__pycache__/
+database/__pycache__/
+*.log
