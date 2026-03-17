@@ -14,13 +14,15 @@ import time
 
 def connect_db():
     retries = 3
+    last_error = "Unknown"
     for i in range(retries):
         if cloud_config.USE_CLOUD:
             try:
                 # Force a short timeout so we don't hang the server
-                conn = psycopg2.connect(cloud_config.DB_CONNECTION_STRING, connect_timeout=5)
+                conn = psycopg2.connect(cloud_config.DB_CONNECTION_STRING, connect_timeout=10)
                 return conn
             except Exception as e:
+                last_error = str(e)
                 print(f"[RETRY {i+1}/{retries}] Cloud DB Connection Failed: {e}")
                 if i < retries - 1:
                     time.sleep(1)
@@ -29,7 +31,7 @@ def connect_db():
             
     # If we are here, it means all retries failed or it's local
     if cloud_config.USE_CLOUD:
-        raise Exception(f"CRITICAL: Could not connect to Supabase after {retries} attempts.")
+        raise Exception(f"CRITICAL: Supabase Connection Failed. Error: {last_error}. Link Used: {cloud_config.DB_CONNECTION_STRING.split('@')[-1]}")
     return sqlite3.connect(DB_PATH)
 
 def get_placeholder():
