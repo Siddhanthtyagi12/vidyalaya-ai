@@ -43,6 +43,19 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.route('/debug_pooler')
+def debug_pooler():
+    regions = ["ap-south-1", "ap-southeast-1", "us-east-1", "us-west-2", "eu-central-1"]
+    results = {}
+    import socket
+    for r in regions:
+        host = f"aws-0-{r}.pooler.supabase.com"
+        try:
+            results[r] = socket.gethostbyname(host)
+        except:
+            results[r] = "N/A"
+    return jsonify(results)
+
 @app.route('/debug_network')
 def debug_network():
     target = "db.dcrdwpkoytycopvnriqn.supabase.co"
