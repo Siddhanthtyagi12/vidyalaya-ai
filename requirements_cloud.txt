@@ -1,6 +1,7 @@
 flask
 flask-cors
 psycopg2-binary
+numpy
 pandas
 fpdf
 openpyxl
